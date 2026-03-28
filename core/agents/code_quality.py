@@ -5,7 +5,7 @@ Finds naming, complexity, and structural quality issues through two parallel tra
 
   Track A (Groq + Pinecone):
     1. Generate targeted search queries from the planner focus area  (1 Groq call)
-    2. Search Pinecone, deduplicate, filter score > 0.65, rerank
+    2. Search Pinecone, deduplicate, filter score > 0.45, rerank
     3. Analyze ALL unique remaining chunks for quality issues         (1 Groq call)
 
   Track B (pure Python, no LLM):
@@ -28,7 +28,7 @@ from core.llm import rate_limited_invoke
 from core.vector_store import search
 from core.reranker import rerank
 
-_SCORE_THRESHOLD   = 0.65
+_SCORE_THRESHOLD   = 0.45
 _TOP_K_PER_QUERY   = 5
 _LONG_FN_WARNING   = 30   # lines
 _LONG_FN_CRITICAL  = 50   # lines
@@ -222,10 +222,16 @@ If no real quality issues are found, return {{"issues": [], "overall_quality_sco
     return _parse_quality_response(raw)
 
 
+_MAX_CHUNK_CHARS = 600
+_MAX_CHUNKS_FOR_PROMPT = 8
+
 def _format_chunks(chunks: list[dict[str, Any]]) -> str:
     parts = []
-    for i, chunk in enumerate(chunks, start=1):
-        parts.append(f"[Chunk {i}]\n{chunk['text']}")
+    for i, chunk in enumerate(chunks[:_MAX_CHUNKS_FOR_PROMPT], start=1):
+        text = chunk["text"]
+        if len(text) > _MAX_CHUNK_CHARS:
+            text = text[:_MAX_CHUNK_CHARS] + "\n... (truncated)"
+        parts.append(f"[Chunk {i}]\n{text}")
     return "\n\n---\n\n".join(parts)
 
 

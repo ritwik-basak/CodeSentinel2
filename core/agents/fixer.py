@@ -119,6 +119,14 @@ def _execute_loop(bug: dict, mode: str, result: dict) -> dict:
             )
             return result
 
+        # Module not found means the sandbox can't run this code (e.g. React/frontend).
+        # Fall back to LLM reflect mode immediately instead of wasting retries.
+        if error and "ERR_MODULE_NOT_FOUND" in error:
+            print(f"    [warn] Sandbox missing dependencies — falling back to reflect mode")
+            result["mode"] = "reflect"
+            result["e2b_error"] = ""
+            return _reflect_loop(bug, result)
+
         prev_error = error
 
     return result

@@ -22,7 +22,7 @@ from pinecone import Pinecone, ServerlessSpec
 # ---------------------------------------------------------------------------
 
 INDEX_NAME = "code-review-index"
-DIMENSION  = 384
+DIMENSION  = 768
 METRIC     = "cosine"
 BATCH_SIZE = 50
 
@@ -163,10 +163,9 @@ def search(
     List of dicts with keys:
         chunk_id, score, text, filename, function_name, line, chunk_type
     """
-    from core.embedder import _get_model
+    from core.embedder import embed_query
 
-    model = _get_model()
-    query_vector = model.encode([query_text])[0].tolist()
+    query_vector = embed_query(query_text)
 
     index  = _get_index()
     kwargs = dict(

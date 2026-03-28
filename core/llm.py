@@ -39,11 +39,23 @@ def _get_llm() -> ChatGroq:
 
 def rate_limited_invoke(prompt: str) -> str:
     """
-    Send ``prompt`` to the Groq LLM and sleep 1.5 s afterward so the next
-    call respects Groq's rate limit.
+    Send ``prompt`` to the Groq LLM and retry with exponential backoff on
+    rate-limit errors (429 / 413). Sleeps 2 s between successful calls.
 
     Returns the model's response as a plain string.
     """
-    response = _get_llm().invoke(prompt)
-    time.sleep(1.5)
-    return response.content
+    wait = 15
+    for attempt in range(5):
+        try:
+            response = _get_llm().invoke(prompt)
+            time.sleep(2)
+            return response.content
+        except Exception as exc:
+            msg = str(exc)
+            if "rate_limit_exceeded" in msg or "413" in msg or "429" in msg:
+                print(f"  [rate limit] waiting {wait}s before retry (attempt {attempt + 1}/5)...")
+                time.sleep(wait)
+                wait = min(wait * 2, 60)
+            else:
+                raise
+    raise RuntimeError("Groq rate limit persisted after 5 retries.")

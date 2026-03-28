@@ -33,6 +33,9 @@ htmlcov/
 node_modules/
 frontend/dist/
 
+# Claude Code
+.claude/
+
 # IDE
 .vscode/
 .idea/

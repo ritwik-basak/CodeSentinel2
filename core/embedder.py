@@ -1,5 +1,5 @@
 """
-embedder.py — Convert parsed code into vector embeddings using BGE-small-en-v1.5.
+embedder.py — Convert parsed code into vector embeddings using Jina AI.
 
 Three chunk types are produced per file:
   • function   — one per function; includes extracted source code
@@ -7,30 +7,53 @@ Three chunk types are produced per file:
   • file       — one per file; summarises imports / function / class counts
 
 CSS and HTML files are skipped entirely.
+
+Embeddings are generated via the Jina AI Embeddings API (no local model).
+Set JINA_API_KEY in your .env file (free at jina.ai, 1M tokens/month).
+Output dimension: 768.
 """
 
 from __future__ import annotations
 
 import os
+import requests
 from typing import Any
 
-MODEL_NAME = "BAAI/bge-small-en-v1.5"
+JINA_MODEL     = "jina-embeddings-v3"
+EMBEDDING_DIM  = 768
 SKIP_LANGUAGES = {"css", "html"}
-
-_model = None
+_JINA_URL      = "https://api.jina.ai/v1/embeddings"
+_BATCH_SIZE    = 100
 
 
 # ---------------------------------------------------------------------------
-# Model loader (lazy, singleton)
+# Embedding via Jina AI API
 # ---------------------------------------------------------------------------
 
-def _get_model():
-    global _model
-    if _model is None:
-        print("Loading embedding model...")
-        from sentence_transformers import SentenceTransformer
-        _model = SentenceTransformer(MODEL_NAME)
-    return _model
+def _jina_embed(texts: list[str]) -> list[list[float]]:
+    """Return 768-dim embeddings for a list of texts via the Jina AI API."""
+    api_key = os.environ.get("JINA_API_KEY")
+    if not api_key:
+        raise EnvironmentError("JINA_API_KEY is not set. Add it to your .env file.")
+
+    all_embeddings: list[list[float]] = []
+    for i in range(0, len(texts), _BATCH_SIZE):
+        batch = texts[i : i + _BATCH_SIZE]
+        resp = requests.post(
+            _JINA_URL,
+            headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
+            json={"model": JINA_MODEL, "dimensions": EMBEDDING_DIM, "input": batch},
+            timeout=60,
+        )
+        resp.raise_for_status()
+        for item in sorted(resp.json()["data"], key=lambda x: x["index"]):
+            all_embeddings.append(item["embedding"])
+    return all_embeddings
+
+
+def embed_query(text: str) -> list[float]:
+    """Embed a single query string. Used by vector_store.search()."""
+    return _jina_embed([text])[0]
 
 
 # ---------------------------------------------------------------------------
@@ -54,7 +77,6 @@ def embed_chunks(
     List of chunk dicts.  Every dict contains an ``embedding`` field
     (list[float] of length 384).
     """
-    model = _get_model()
     chunks: list[dict[str, Any]] = []
 
     for filepath, parse_result in parsed.items():
@@ -130,10 +152,11 @@ def embed_chunks(
 
     # ── Batch embed all chunks ─────────────────────────────────────────────
     if chunks:
-        texts      = [c["text"] for c in chunks]
-        embeddings = model.encode(texts, show_progress_bar=True, batch_size=64)
+        texts = [c["text"] for c in chunks]
+        print(f"Embedding {len(texts)} chunks via Jina AI...")
+        embeddings = _jina_embed(texts)
         for chunk, emb in zip(chunks, embeddings):
-            chunk["embedding"] = emb.tolist()
+            chunk["embedding"] = emb
 
     return chunks
 

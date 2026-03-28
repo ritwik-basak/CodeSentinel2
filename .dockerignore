@@ -1,0 +1,17 @@
+# Python
+venv/
+__pycache__/
+*.pyc
+*.pyo
+.Python
+
+# Environment — never copy secrets into the image
+.env
+
+# Dev/local files
+.git/
+.claude/
+review_output/
+
+# Frontend — not needed in backend container
+frontend/

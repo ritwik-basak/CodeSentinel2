@@ -1,0 +1,17 @@
+PyGithub==2.3.0
+python-dotenv==1.0.1
+tree-sitter==0.25.2
+tree-sitter-python==0.25.0
+tree-sitter-javascript==0.25.0
+tree-sitter-typescript==0.23.2
+sentence-transformers
+pinecone
+langchain-groq
+groq
+e2b-code-interpreter==1.0.4
+langgraph
+langchain
+langsmith
+sse-starlette
+fastapi
+uvicorn

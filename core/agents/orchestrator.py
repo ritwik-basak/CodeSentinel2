@@ -70,8 +70,9 @@ def _build_prompt(
         for lang, count in sorted(language_breakdown.items(), key=lambda x: -x[1])
     )
 
-    file_list = "\n".join(f"  {f}" for f in filenames)
-    import_list = ", ".join(all_imports) if all_imports else "(none detected)"
+    file_list = "\n".join(f"  {f}" for f in filenames[:60])
+    imports_capped = all_imports[:40]
+    import_list = ", ".join(imports_capped) if imports_capped else "(none detected)"
 
     return f"""You are a senior software engineer performing an initial triage of a GitHub repository.
 

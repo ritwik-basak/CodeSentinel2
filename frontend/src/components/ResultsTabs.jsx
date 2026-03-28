@@ -675,6 +675,12 @@ function DocsTab({ docResult }) {
       )}
 
       {/* README checklist */}
+      <div className="flex items-start gap-2.5 px-3.5 py-2.5 rounded-lg bg-amber-50 border border-amber-200 text-xs text-amber-800">
+        <span className="mt-0.5 flex-shrink-0">⚠️</span>
+        <span>
+          <span className="font-semibold">Note:</span> README analysis is performed by the LLM within its token budget. For very large README files, some sections may not be assessed and could appear as missing. This is a known limitation of the free-tier Groq API (llama-3.3-70b-versatile).
+        </span>
+      </div>
       <ReadmeChecklist readmeQuality={readmeQuality} readmeAssessment={readmeAssessment} />
 
       {/* Findings — missing docstrings / JSDoc */}

@@ -19,7 +19,7 @@ from core.llm import rate_limited_invoke
 
 # README filenames we recognise (checked against the bare filename, not the path)
 _README_NAMES = {"README.md", "readme.md", "README.rst", "README.txt", "README"}
-_README_PREVIEW_CHARS = 2000
+_README_PREVIEW_CHARS = 9000
 
 
 # ---------------------------------------------------------------------------
@@ -84,7 +84,7 @@ LANGUAGE BREAKDOWN:
 FILES IN REPO ({len(filenames)} total):
 {file_list}
 
-README (first {_README_PREVIEW_CHARS} characters):
+README (up to {_README_PREVIEW_CHARS} characters):
 {readme}
 
 ALL IMPORTS FOUND ACROSS THE REPO:

@@ -101,8 +101,6 @@ Your job is to read the repository analysis below and decide which specialist
 review agents to activate, in what priority order, and with what specific focus
 instructions for each activated agent.
 
-Think step by step and explain your reasoning before giving the final JSON answer.
-
 ---
 REPOSITORY ANALYSIS (from Orchestrator):
   Project type : {summary.get('project_type', 'Unknown')}
@@ -127,11 +125,9 @@ Decide which agents to activate.  You may activate any subset — there is no
 requirement to activate all of them.  Skipping an agent is valid if its focus
 area is not relevant to this project.
 
-Respond with ONLY a JSON object — no markdown, no code fences, no explanation
-outside the JSON — in this exact shape:
+Respond with ONLY a JSON object — no markdown, no code fences, no text outside the JSON:
 
 {{
-  "reasoning": "Your step-by-step explanation of each decision here",
   "activated_agents": ["list", "of", "agent", "names"],
   "skipped_agents": {{
     "agent_name": "one-line reason for skipping"
@@ -220,7 +216,7 @@ def _normalise(data: dict) -> dict[str, Any]:
     }
 
     return {
-        "reasoning":        data.get("reasoning", ""),
+        "reasoning":        "",
         "activated_agents": activated,
         "skipped_agents":   skipped,
         "priority_order":   priority,

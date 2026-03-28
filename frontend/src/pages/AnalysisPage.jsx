@@ -98,7 +98,8 @@ function determineRunningStep(events) {
 export default function AnalysisPage() {
   const { jobId }  = useParams()
   const navigate   = useNavigate()
-  const sseUrl     = jobId ? `/review/${jobId}/stream` : null
+  const base   = import.meta.env.VITE_API_URL || ''
+  const sseUrl = jobId ? `${base}/review/${jobId}/stream` : null
 
   const { events, status, report, error, reconnect } = useSSEStream(sseUrl)
 

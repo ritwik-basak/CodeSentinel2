@@ -31,7 +31,8 @@ export default function LandingPage() {
     setLoading(true)
 
     try {
-      const { data } = await axios.post('/review', { repo_url: trimmed })
+      const base = import.meta.env.VITE_API_URL || ''
+      const { data } = await axios.post(`${base}/review`, { repo_url: trimmed })
       navigate(`/review/${data.review_id}`)
     } catch (err) {
       const msg = err?.response?.data?.detail || err?.message || 'Failed to start review.'

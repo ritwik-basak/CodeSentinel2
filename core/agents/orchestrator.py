@@ -19,7 +19,7 @@ from core.llm import rate_limited_invoke
 
 # README filenames we recognise (checked against the bare filename, not the path)
 _README_NAMES = {"README.md", "readme.md", "README.rst", "README.txt", "README"}
-_README_PREVIEW_CHARS = 9000
+_README_PREVIEW_CHARS = 3000
 
 
 # ---------------------------------------------------------------------------

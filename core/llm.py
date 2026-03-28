@@ -48,7 +48,7 @@ def rate_limited_invoke(prompt: str) -> str:
     for attempt in range(5):
         try:
             response = _get_llm().invoke(prompt)
-            time.sleep(2)
+            time.sleep(5)
             return response.content
         except Exception as exc:
             msg = str(exc)

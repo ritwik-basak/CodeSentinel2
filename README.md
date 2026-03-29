@@ -1,6 +1,16 @@
-# CodeSentinel — Multi-Agent Code Analysis & Self-Repair System
+<div align="center">
+
+# CodeSentinel 🛡️
+
+## Multi-Agent Autonomous Code Review and Self-Debugging System
+
+[![Live Demo](https://img.shields.io/badge/LIVE%20DEMO-00C853?style=for-the-badge&logo=vercel&logoColor=white)](https://code-sentinel2.vercel.app/)
+
+</div>
+
 
 A full-stack AI-powered code review system built with FastAPI and React. Point CodeSentinel at any public GitHub repository, and it deploys a pipeline of specialized AI agents to detect bugs, audit security vulnerabilities, assess documentation quality, and measure code health — then synthesizes everything into a structured report with suggested fixes, streamed live to your browser.
+
 
 ![Python](https://img.shields.io/badge/Python-3.10+-blue?style=flat&logo=python)
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.110+-green?style=flat&logo=fastapi)
@@ -10,6 +20,36 @@ A full-stack AI-powered code review system built with FastAPI and React. Point C
 ![Pinecone](https://img.shields.io/badge/Pinecone-Vector_Search-green?style=flat)
 ![LangSmith](https://img.shields.io/badge/LangSmith-Tracing-blue?style=flat)
 ![E2B](https://img.shields.io/badge/E2B-Sandboxed_Execution-red?style=flat)
+
+---
+
+## 📸 Demo Preview
+
+### 🏠 Homepage
+<a href="assets/Homepage.png">
+  <img src="assets/Homepage.png" width="100%" />
+</a>
+
+---
+
+### 🤖 Agent Pipeline
+<a href="assets/Agent%20Pipeline.png">
+  <img src="assets/Agent%20Pipeline.png" width="100%" />
+</a>
+
+---
+
+### 📊 Repo Overview
+<a href="assets/Repo%20Overview.png">
+  <img src="assets/Repo%20Overview.png" width="100%" />
+</a>
+
+---
+
+### 🐞 Bugs & Fixes
+<a href="assets/Bugs%20%26%20Fixes.png">
+  <img src="assets/Bugs%20%26%20Fixes.png" width="100%" />
+</a>
 
 ---
 
